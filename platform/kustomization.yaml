@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - sources.yaml
+  - cert-manager  # SSL certificates
   - database    # CrateDB and KeyDB
   - storage     # MinIO
   - monitoring  # Prometheus, Grafana, etc.

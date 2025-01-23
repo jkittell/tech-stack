@@ -4,22 +4,30 @@ metadata:
   name: database-ingress
   namespace: database
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - cratedb.jkittell.com
+    - keydb.jkittell.com
+    secretName: database-tls
   rules:
-  - host: ${DOMAIN}
+  - host: cratedb.jkittell.com
     http:
       paths:
-      - path: /cratedb
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: cratedb
             port:
               number: 4200
-      - path: /keydb
+  - host: keydb.jkittell.com
+    http:
+      paths:
+      - path: /
         pathType: Prefix
         backend:
           service:
@@ -33,28 +41,58 @@ metadata:
   name: monitoring-ingress
   namespace: monitoring
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - grafana.jkittell.com
+    - prometheus.jkittell.com
+    - loki.jkittell.com
+    - tempo.jkittell.com
+    secretName: monitoring-tls
   rules:
-  - host: ${DOMAIN}
+  - host: grafana.jkittell.com
     http:
       paths:
-      - path: /prometheus(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: prometheus-server
-            port:
-              number: 9090
-      - path: /grafana(/|$)(.*)
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: grafana
             port:
               number: 3000
+  - host: prometheus.jkittell.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-server
+            port:
+              number: 9090
+  - host: loki.jkittell.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: loki
+            port:
+              number: 3100
+  - host: tempo.jkittell.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tempo
+            port:
+              number: 3100
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -62,15 +100,19 @@ metadata:
   name: search-ingress
   namespace: search
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - search.jkittell.com
+    secretName: search-tls
   rules:
-  - host: ${DOMAIN}
+  - host: search.jkittell.com
     http:
       paths:
-      - path: /search
+      - path: /
         pathType: Prefix
         backend:
           service:
@@ -84,23 +126,27 @@ metadata:
   name: storage-ingress
   namespace: storage
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio.jkittell.com
+    secretName: storage-tls
   rules:
-  - host: ${DOMAIN}
+  - host: minio.jkittell.com
     http:
       paths:
-      - path: /minio
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: minio
             port:
               number: 9000
-      - path: /minio-console
+      - path: /console
         pathType: Prefix
         backend:
           service:
