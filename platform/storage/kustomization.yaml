@@ -5,10 +5,5 @@ resources:
   - namespace.yaml
   - minio/helm-release.yaml
 
-configMapGenerator:
-  - name: minio-dashboards
-    files:
-      - minio/dashboards/minio-overview.json
-
 commonLabels:
   app.kubernetes.io/component: storage
