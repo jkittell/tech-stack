@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+resources:
+  - helm-release.yaml
+  - secret.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: tech-stack
+  app.kubernetes.io/component: monitoring
+  app.kubernetes.io/name: grafana

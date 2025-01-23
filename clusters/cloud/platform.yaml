@@ -4,7 +4,7 @@ metadata:
   name: platform
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 1m
   path: ./platform
   prune: true
   sourceRef:
@@ -16,6 +16,6 @@ spec:
     substitute:
       # Cloud settings
       ENVIRONMENT: cloud
-      DOMAIN: ${DROPLET_IP}.nip.io  # Will automatically map to your Droplet's IP
-      # DigitalOcean resources
+      DOMAIN: jkittell.com
+      # Storage settings
       MINIO_STORAGE: "20Gi"
