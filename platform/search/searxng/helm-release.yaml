@@ -11,7 +11,7 @@ spec:
       version: "5.3.2"
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: searxng
         namespace: flux-system
   values:
     image:
