@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cratedb
+  namespace: ai-stack
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: cratedb
+      sourceRef:
+        kind: HelmRepository
+        name: cratedb
+        namespace: flux-system
+  values:
+    resources:
+      requests:
+        memory: ${CRATEDB_MEMORY_REQUEST:-1Gi}
+        cpu: ${CRATEDB_CPU_REQUEST:-500m}
+      limits:
+        memory: ${CRATEDB_MEMORY}  # From environment
+        cpu: ${CRATEDB_CPU:-2000m}
+    cluster:
+      name: ${ENVIRONMENT}-cratedb
+    persistence:
+      enabled: true
+      size: ${CRATEDB_STORAGE:-20Gi}
+    monitoring:
+      enabled: true
+      serviceMonitor:
+        enabled: true

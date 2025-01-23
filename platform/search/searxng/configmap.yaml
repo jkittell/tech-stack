@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-config
+  namespace: search
+data:
+  settings.yml: |
+    use_default_settings: true
+    general:
+      debug: false
+      instance_name: DevSearch
+      
+    search:
+      safe_search: 0
+      autocomplete: 'google'
+      
+    server:
+      secret_key: "change_me_before_production"  # Change this in production
+      bind_address: "0.0.0.0:8080"
+      default_http_headers:
+        X-Frame-Options: "SAMEORIGIN"
+        X-Content-Type-Options: "nosniff"
+        X-XSS-Protection: "1; mode=block"
+        Referrer-Policy: "no-referrer"
+      
+    ui:
+      static_path: ""
+      templates_path: ""
+      default_theme: simple
+      default_locale: en
+      results_on_new_tab: false
+      
+    engines:
+      - name: google
+        engine: google
+        shortcut: g
+        
+      - name: duckduckgo
+        engine: duckduckgo
+        shortcut: ddg
+        
+      - name: wikipedia
+        engine: wikipedia
+        shortcut: w
+        
+    redis:
+      url: redis://keydb.database:6379/0

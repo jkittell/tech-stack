@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: database
+
+resources:
+  - namespace.yaml
+  - cratedb
+  - keydb
+
+commonLabels:
+  app.kubernetes.io/part-of: tech-stack
+  app.kubernetes.io/component: database
+
+configMapGenerator:
+  - name: database-config
+    literals:
+      - CRATEDB_HOST=cratedb.database:5432
+      - KEYDB_HOST=keydb.database:6379

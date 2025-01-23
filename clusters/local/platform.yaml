@@ -1,0 +1,24 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./platform
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: flux-system
+  postBuild:
+    substitute:
+      # Local development settings
+      ENVIRONMENT: local
+      DOMAIN: local.example.com
+      # Minimal resources for Docker Desktop
+      MINIO_STORAGE: "10Gi"
+      CRATEDB_MEMORY: "2Gi"
+      OLLAMA_MEMORY: "4Gi"
+      GRAFANA_REPLICAS: "1"

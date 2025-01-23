@@ -1,0 +1,53 @@
+{
+  "title": "System Monitoring",
+  "panels": [
+    {
+      "title": "CPU Usage by Pod",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    },
+    {
+      "title": "Memory Usage by Pod",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(container_memory_usage_bytes{container!=\"\"}) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    },
+    {
+      "title": "Network Traffic by Pod",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(container_network_receive_bytes_total[5m])) by (pod)",
+          "legendFormat": "{{pod}} Receive"
+        },
+        {
+          "expr": "sum(rate(container_network_transmit_bytes_total[5m])) by (pod)",
+          "legendFormat": "{{pod}} Transmit"
+        }
+      ]
+    },
+    {
+      "title": "Disk Usage by Pod",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(container_fs_usage_bytes{container!=\"\"}) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    }
+  ]
+}

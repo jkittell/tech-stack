@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  namespace: search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: searxng
+  template:
+    metadata:
+      labels:
+        app: searxng
+    spec:
+      containers:
+      - name: searxng
+        image: searxng/searxng:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BASE_URL
+          value: "https://search.local/"  # Will be overridden by configmap
+        - name: INSTANCE_NAME
+          value: "DevSearch"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/searxng
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: config
+        configMap:
+          name: searxng-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: searxng
+  namespace: search
+spec:
+  selector:
+    app: searxng
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

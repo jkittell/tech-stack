@@ -1,0 +1,75 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: minio
+  namespace: storage
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: minio
+      version: ">=12.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: minio
+        namespace: flux-system
+  values:
+    mode: standalone  # Use distributed for production
+    auth:
+      rootUser: minioadmin
+      rootPassword: minioadmin  # Change this in production
+    persistence:
+      enabled: true
+      size: ${MINIO_STORAGE}  # Will be different per environment
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 250m
+      limits:
+        memory: ${MINIO_MEMORY:-1Gi}  # Default to 1Gi if not set
+        cpu: ${MINIO_CPU:-500m}       # Default to 500m if not set
+    buckets:
+      - name: tempo-traces
+        policy: none
+        purge: false
+        lifecycle:
+          - id: "expire-traces"
+            status: "Enabled"
+            expiry:
+              days: 14
+      - name: loki-logs
+        policy: none
+        purge: false
+        lifecycle:
+          - id: "expire-logs"
+            status: "Enabled"
+            expiry:
+              days: 30
+          - id: "move-old-logs"
+            status: "Enabled"
+            transition:
+              days: 7
+              tier: "COLD"
+    metrics:
+      serviceMonitor:
+        enabled: true
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: false  # Enable if needed
+    prometheusRule:
+      enabled: true
+      rules:
+        - alert: MinioHighUsage
+          expr: disk_storage_used / disk_storage_total > 0.85
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: High storage usage in MinIO
+            description: "Storage usage is above 85%"
+    dashboards:
+      enabled: true
+      files:
+        minio-overview.json: |-
+          {{ .Files.Get "dashboards/minio-overview.json" }}

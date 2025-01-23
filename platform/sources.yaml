@@ -1,0 +1,53 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: prometheus-community
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: crate
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://crate.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: minio
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.min.io/
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: keydb
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://enapter.github.io/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: oauth2-proxy
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://oauth2-proxy.github.io/manifests
