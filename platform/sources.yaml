@@ -28,6 +28,15 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
+  name: searxng
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.searxng.org
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
   name: crate
   namespace: flux-system
 spec:
