@@ -7,10 +7,9 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: searxng
-      version: "1.0.0"
+      chart: ./searxng
       sourceRef:
-        kind: HelmRepository
+        kind: GitRepository
         name: searxng
         namespace: flux-system
   values:
