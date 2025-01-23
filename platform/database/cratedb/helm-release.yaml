@@ -7,8 +7,8 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: crate/crate
-      version: ">=0.1.0"
+      chart: crate
+      version: "0.2.0"
       sourceRef:
         kind: HelmRepository
         name: crate

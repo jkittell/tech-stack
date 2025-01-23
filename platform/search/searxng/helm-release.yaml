@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: searxng
-      version: ">=1.0.0"
+      version: "0.1.0"
       sourceRef:
         kind: HelmRepository
         name: searxng
@@ -35,13 +35,17 @@ spec:
     
     env:
       - name: BASE_URL
-        value: "https://search.${DOMAIN}"
+        value: "https://search.jkittell.com"
       - name: INSTANCE_NAME
         value: "Personal Search"
     
     service:
-      type: ClusterIP
-      port: 8080
+      main:
+        ports:
+          http:
+            port: 8080
+            enabled: true
+        type: ClusterIP
     
     resources:
       requests:
@@ -52,4 +56,13 @@ spec:
         cpu: 200m
     
     ingress:
-      enabled: false  # We'll use our own ingress configuration
+      main:
+        enabled: true
+        hosts:
+          - host: search.jkittell.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - search.jkittell.com
