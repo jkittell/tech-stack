@@ -9,3 +9,12 @@ resources:
   - monitoring  # Prometheus, Grafana, etc.
   - ingress     # Nginx Ingress
   - search      # SearXNG
+  - GitRepository
+
+patches:
+  - path: patches/env.yaml
+    target:
+      kind: HelmRelease
+
+commonLabels:
+  app.kubernetes.io/managed-by: flux

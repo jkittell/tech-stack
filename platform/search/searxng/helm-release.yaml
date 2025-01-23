@@ -13,15 +13,16 @@ spec:
         name: searxng
         namespace: flux-system
   values:
-    searxng:
-      config:
-        server:
-          base_url: https://search.jkittell.com
-          secret_key: ${SEARXNG_SECRET_KEY:-changeme}
-          bind_address: "0.0.0.0:8080"
-        general:
-          instance_name: "Personal Search"
-          debug: false
+    image:
+      repository: searxng/searxng
+      tag: latest
+    
+    config:
+      baseUrl: "https://search.jkittell.com"
+      instanceName: "Personal Search"
+      redis:
+        host: keydb
+        port: 6379
     
     ingress:
       enabled: true
@@ -37,15 +38,3 @@ spec:
         - hosts:
             - search.jkittell.com
           secretName: searxng-tls
-    
-    service:
-      type: ClusterIP
-      port: 8080
-    
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 1000m
-        memory: 512Mi
