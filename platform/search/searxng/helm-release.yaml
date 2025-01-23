@@ -22,10 +22,16 @@ spec:
     volumes:
       - name: config-volume
         emptyDir: {}
+      - name: settings
+        configMap:
+          name: searxng-config
     
     volumeMounts:
       - name: config-volume
         mountPath: /etc/searxng
+      - name: settings
+        mountPath: /etc/searxng/settings.yml
+        subPath: settings.yml
     
     env:
       - name: BASE_URL
