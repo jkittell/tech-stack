@@ -8,56 +8,31 @@ spec:
   chart:
     spec:
       chart: searxng
-      version: "0.1.0"
+      version: "5.3.2"
       sourceRef:
         kind: HelmRepository
-        name: searxng
+        name: k8s-at-home
         namespace: flux-system
   values:
     image:
       repository: searxng/searxng
       tag: latest
-    
-    # Add volume for configuration
-    volumes:
-      - name: config-volume
-        emptyDir: {}
-      - name: settings
-        configMap:
-          name: searxng-config
-    
-    volumeMounts:
-      - name: config-volume
-        mountPath: /etc/searxng
-      - name: settings
-        mountPath: /etc/searxng/settings.yml
-        subPath: settings.yml
-    
     env:
       - name: BASE_URL
         value: "https://search.jkittell.com"
       - name: INSTANCE_NAME
         value: "Personal Search"
-    
     service:
       main:
         ports:
           http:
             port: 8080
-            enabled: true
-        type: ClusterIP
-    
-    resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
-      limits:
-        memory: 512Mi
-        cpu: 200m
-    
     ingress:
       main:
         enabled: true
+        ingressClassName: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
         hosts:
           - host: search.jkittell.com
             paths:
@@ -66,3 +41,10 @@ spec:
         tls:
           - hosts:
               - search.jkittell.com
+            secretName: searxng-tls
+    persistence:
+      config:
+        enabled: true
+        mountPath: /etc/searxng
+        type: configMap
+        name: searxng-settings
